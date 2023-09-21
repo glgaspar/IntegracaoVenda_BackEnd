@@ -2,10 +2,14 @@ import sys
 from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect, request
 import requests
-
 from schemas import *
 from flask_cors import CORS
 import sqlite3
+import os
+import dotenv
+
+# le variaveis do arquivo .env
+dotenv.load_dotenv()
 
 info = Info(title="API de operção de vendas e estoque", version="1.0.0")
 app = OpenAPI(__name__, info=info)
@@ -76,7 +80,6 @@ def get_vendas():
 
     Retorna as vendas registradas com informações gerais.
     """
-    # cria a engine de conexão com o banco
     try:
         db = sqlite3.connect('db.db')
         cursor = db.cursor()
@@ -190,10 +193,11 @@ def post_venda(body:VendaPostSchema):
 
     Retorna uma confirmação sobre a tentativa de registro.
     """
+    api_login_path = os.getenv('API_LOGIN_PATH')
     data = body.dict()
     headers = {"Content-Type": "application/json"}
 
-    user = requests.request("GET",f"http://localhost:5000/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("GET",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
         if user.json().get('vendedor')==1:
@@ -250,9 +254,9 @@ def put_cancel_venda(body:VendaPutStatus):
     
     Retorna uma confirmação sobre a tentativa de registro.
     """
+    api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-
-    user = requests.request("POST",f"http://localhost:5000/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
         if user.content.get('vendedor')==1:
@@ -280,9 +284,9 @@ def put_recebimento(body: VendaPutStatus):
 
     Retorna uma confirmação sobre a tentativa de registro.
     """
+    api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-
-    user = requests.request("POST",f"http://localhost:5000/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
         if user.content.get('vendedor')==1:
@@ -310,9 +314,9 @@ def delete_venda_item(query: VendaDeleteVendaItem):
     
     Retorna uma confirmação sobre a tentativa de registro.
     """
+    api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-
-    user = requests.request("POST",f"http://localhost:5000/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
         if user.content.get('vendedor')==1:
