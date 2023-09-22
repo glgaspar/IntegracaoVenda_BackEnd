@@ -247,26 +247,26 @@ def post_venda(body:VendaPostSchema):
         return {"message":"Erro na validação do usuário"}, 400
 
 
-@app.post('/venda/cancel', tags=[vendas_tag],
+@app.delete('/venda', tags=[vendas_tag],
          responses={"200": VendaMensagemRetorno, "400": ErrorSchema, "500": ErrorSchema, "403": ErrorSchema})
-def put_cancel_venda(body:VendaPutStatus):
+def put_cancel_venda(query:VendaPutStatus):
     """Cancela uma venda a partir do ID
     
     Retorna uma confirmação sobre a tentativa de registro.
     """
     api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("GET",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
-        if user.content.get('vendedor')==1:
+        if user.json().get('vendedor')==1:
             try:
                 db = sqlite3.connect('db.db')
                 cursor = db.cursor()
                 cursor.execute(f'''
                     update venda 
                         set status = 4
-                    where id = {body.numPedido}
+                    where id = {query.numPedido}
                     ''')
                 db.commit()
                 return {'message':'Cancelamento confirmado com suceso'}, 200   
@@ -286,10 +286,10 @@ def put_recebimento(body: VendaPutStatus):
     """
     api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("GET",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
-        if user.content.get('vendedor')==1:
+        if user.json().get('vendedor')==1:
             try:
                 db = sqlite3.connect('db.db')
                 cursor = db.cursor()
@@ -316,10 +316,10 @@ def delete_venda_item(query: VendaDeleteVendaItem):
     """
     api_login_path = os.getenv('API_LOGIN_PATH')
     headers = {"Content-Type": "application/json"}
-    user = requests.request("POST",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
+    user = requests.request("GET",api_login_path+f"/permission?token={request.headers.get('X-Custom-Token')}", headers=headers)
 
     if user.status_code == 200:
-        if user.content.get('vendedor')==1:
+        if user.json().get('vendedor')==1:
             try:
                 db = sqlite3.connect('db.db')
                 cursor = db.cursor()
