@@ -21,7 +21,7 @@ class ProdutoViewSchema(BaseModel):
 class ListagemProdutosSchema(BaseModel):
     """ Define como uma listagem de produtos será retornada.
     """
-    produtos:List[ProdutoViewSchema]
+    data:List[ProdutoViewSchema]
 
 
 class ProdutoMensagemRetorno(BaseModel):

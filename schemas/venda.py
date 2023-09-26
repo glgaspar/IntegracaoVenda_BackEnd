@@ -17,7 +17,7 @@ class VendasView(BaseModel):
 class VendasListView(BaseModel):
     """Define como é a lista de vendas retornada.
     """
-    List[VendasView]
+    data: List[VendasView]
 
 
 class VendaBuscaPorIDSchema(BaseModel):
