@@ -1,5 +1,5 @@
 import sys
-from flask_openapi3 import OpenAPI, Info, Tag
+from flask_openapi3 import OpenAPI, Info, Tag, Header
 from flask import redirect, request
 import requests
 from schemas import *
@@ -11,8 +11,17 @@ import dotenv
 # le variaveis do arquivo .env
 dotenv.load_dotenv()
 
-info = Info(title="API de operção de vendas e estoque", version="1.0.0")
-app = OpenAPI(__name__, info=info)
+authorizations = {
+    'Token de usuário da API de Login': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Custom-Token'
+    },
+}
+description = "Essa API exige o envio do token de usuário gerado pela API de login no header das operações que alteram e/ou inserem informações no banco de dados.\nA estrutura está descrita na autorização."
+
+info = Info(title="API de operação de vendas e estoque", version="1.0.0", description=description)
+app = OpenAPI(__name__, info=info, security_schemes=authorizations)
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
 
 CORS(app)
@@ -279,7 +288,7 @@ def put_cancel_venda(query:VendaPutStatus):
 
 @app.put('/recebimento', tags=[vendas_tag],
          responses={"200": VendaMensagemRetorno, "400": ErrorSchema, "500": ErrorSchema, "403": ErrorSchema})
-def put_recebimento(body: VendaPutStatus):
+def put_recebimento(query: VendaPutStatus):
     """Altera o status de uma venda para "Recebido pelo cliente".
 
     Retorna uma confirmação sobre a tentativa de registro.
@@ -296,7 +305,7 @@ def put_recebimento(body: VendaPutStatus):
                 cursor.execute(f'''
                     update venda 
                         set status = 3
-                    where id = {body.numPedido}
+                    where id = {query.numPedido}
                     ''')
                 db.commit()
                 return {'message':'Recebimento confirmado com suceso'}, 200   
