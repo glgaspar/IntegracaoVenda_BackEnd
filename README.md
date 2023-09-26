@@ -54,4 +54,6 @@ Por se tratar de uma API integrada com outros sistemas:
 
 [Login_API](https://github.com/glgaspar/Login_API.git)
 
-Recomenda-se manter as portas indicadas. Caso contrário, será necessário adaptar as rotas dos programas nos respectivos arquivos .env
+Recomenda-se manter as portas indicadas. Caso contrário, será necessário adaptar as rotas dos programas nos respectivos arquivos .env.
+
+As rotas estão fixadas usando o endereço interno do docker (host.docker.internal), então para executar os programas sem o uso do docker, será necessário alterar o caminho no arquivo .env.
