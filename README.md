@@ -46,6 +46,14 @@ Uma vez executando, para acessar a API, basta abrir o [http://localhost:7000/#/]
 ---
 ### OBS
 
+Essa API exige o envio do token de usuário gerado pela API de login no header das operações que alteram e/ou inserem informações no banco de dados.
+
+O token deve ser inserido no header da requisição da seguinte forma:
+
+```javascript
+{ "X-custom-token": "string gerada pela API de login" }
+```
+
 Por se tratar de uma API integrada com outros sistemas:
 
 [IntegracaoVenda_FrontEnd](https://github.com/glgaspar/IntegracaoVenda_FrontEnd.git)
