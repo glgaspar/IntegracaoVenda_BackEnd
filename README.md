@@ -51,7 +51,7 @@ Essa API exige o envio do token de usuário gerado pela API de login no header d
 O token deve ser inserido no header da requisição da seguinte forma:
 
 ```javascript
-{ "X-custom-token": "string gerada pela API de login" }
+{ "X-Custom-Token": "string gerada pela API de login" }
 ```
 
 Por se tratar de uma API integrada com outros sistemas:
